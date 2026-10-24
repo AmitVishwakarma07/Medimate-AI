@@ -1,0 +1,24 @@
+# Render Blueprint: one free web service (the app). The database lives on Neon (see docs/DEPLOY_FREE.md).
+services:
+  - type: web
+    name: medimate-ai
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true          # Render creates a long random secret for you
+      - key: DATABASE_URL
+        sync: false                  # you paste the Neon connection string in the Render dashboard
+      - key: CONTACT_EMAIL
+        sync: false                  # an address you read, shown in the privacy notice
+      - key: TRUST_PROXY
+        value: "true"
+      - key: TRUSTED_PROXY_HOPS
+        value: "1"
+      - key: DEMO_MODE
+        value: "false"
