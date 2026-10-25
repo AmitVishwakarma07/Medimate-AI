@@ -9,9 +9,14 @@ except ImportError:  # python-dotenv is optional
     pass
 
 def normalize_database_url(url: str) -> str:
-    """Some hosts hand out 'postgres://...'; SQLAlchemy needs 'postgresql://...'."""
+    """Make the URL name the driver we install (psycopg2).
+    Hosts give 'postgres://...' or 'postgresql://...'; newer SQLAlchemy would then look for a
+    different driver ('psycopg', version 3) that is not installed."""
+    url = url.strip().strip("'\"")
     if url.startswith("postgres://"):
         url = "postgresql://" + url[len("postgres://"):]
+    if url.startswith("postgresql://"):
+        url = "postgresql+psycopg2://" + url[len("postgresql://"):]
     return url
 
 
